@@ -113,3 +113,5 @@ public class Homework1 {
         return Integer.parseInt(n.data.toString());
 	}
 }
+
+
