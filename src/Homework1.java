@@ -1,58 +1,73 @@
 import java.util.Stack;
+import java.util.Scanner;
+
 public class Homework1 {
-	static Node tree;
-    	static Stack<Character> queStack = new Stack<Character>();
+
+	public static Stack<Character> queStack = new Stack<Character>();
+    public static Node tree;
+
 
 	
 	public static void main(String[] args) {
 		// Begin of arguments input sample
-		if (args.length > 0) {
-			String input = args[0];
-			if (input.equalsIgnoreCase("251-*32*+")) {
-				System.out.println("(2*(5-1))+(3*2)=14");
-			}
-		}
+        System.out.print("input : ");
+        Scanner Question = new Scanner(System.in);
+        String input = Question.nextLine();
+
+//        if(args.length >0){
+//            input = args[0];
+//            if(input.equalsIgnoreCase("251-*32*+")){
+//                System.out.print("(2*(5-1))+(3*2)=14");
+//            }
+//        }
 		// End of arguments input sample
-		
 		// TODO: Implement your project here
-	if(args.length > 0){
-            String input = args[0];
-            int dataLength = input.length() - 1;
-                
+
+        for(int i = 0; i < input.length(); i++)
+        {
+            queStack.add(input.charAt(i));
+        }
+
         tree = new Node(queStack.pop());
         infix(tree);
         inorder(tree);
-        System.out.print(" = " + calculate(tree));
-        
+
+
+        System.out.print(" = ");
+        System.out.print(calculate(tree));
+
+        TreeDemo.main(args);
+
+    }
+
+    static class Node{
+
+        public String toString()
+        {
+            return data.toString();
         }
-}
-	
-static class Node{
-    int data;
-    Node left;
-    Node right;	
-    public Node(int data){
-            this.data = data;
+
+	    Character data;
+        Node left;
+        Node right;
+        public Node(char key)
+        {
+            data = key;
             left = null;
             right = null;
         }
+
     }
-    
+
     static void infix(Node n){
-        if(n.data == '1' || n.data == '2' ||  n.data == '3' ||  n.data == '4' ||  n.data == '5' || n.data == '6' || n.data == '7' || n.data == '8' || n.data == '9' || n.data == '0'){ 
+
+        if(n.data == '+' || n.data == '*' ||  n.data == '-' ||  n.data == '/'){
                 
-            if (n.left != null && n.right != null) 
-            {  
-                System.out.print ("(");
-            }
-                
-            infix(n.left);
-            System.out.print(n.data);
+            n.right = new Node(queStack.pop());
             infix(n.right);
-                
-            if (n.left != null && n.right != null) {  
-                System.out.print (")");
-            }
+
+            n.left = new Node(queStack.pop());
+            infix(n.left);
         }
     }
            
@@ -60,33 +75,41 @@ static class Node{
         
         if(n.data == '+' || n.data == '-' || n.data == '*' || n.data == '/')
         {
+            if(n!=tree)
+            {
+                System.out.print("(");
+            }
             inorder(n.left);
             System.out.print(n.data);
             inorder(n.right);
-        }
+            if(n!=tree)
+            {
+                System.out.print(")");
+            }
+
+        }else{
+
+            System.out.print(n.data);
+            }
     }
         
-    static int calculate(Node n){
-        
-        if(n.data == '+' || n.data == '-' || n.data == '*' || n.data == '/')
-        {
-            if(n.data == '+'){
-               return calculate(n.left) + calculate(n.right);
+    static int calculate(Node n) {
+
+        if (n.data == '+' || n.data == '-' || n.data == '*' || n.data == '/') {
+
+            if (n.data == '+') {
+                return calculate(n.left) + calculate(n.right);
             }
-            if(n.data == '-'){
-              return calculate(n.left) - calculate(n.right);
+            if (n.data == '-') {
+                return calculate(n.left) - calculate(n.right);
             }
-            if(n.data == '*'){
+            if (n.data == '*') {
                 return calculate(n.left) * calculate(n.right);
             }
-            if(n.data == '/'){
+            if (n.data == '/') {
                 return calculate(n.left) / calculate(n.right);
             }
-        } 
-        else 
-        {
-            return Character.getNumericValue(n.data);
         }
-        return 0;
-    }
+        return Integer.parseInt(n.data.toString());
+	}
 }
